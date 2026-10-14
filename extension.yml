@@ -1,0 +1,73 @@
+schema_version: "1.0"
+
+extension:
+  id: "datablush"
+  name: "Datablush"
+  version: "0.1.0"
+  description: "Keeps every spec in Datablush: versions, its task and sub-tasks, decisions, and plan approval before implement."
+  author: "Datablush"
+  repository: "https://github.com/datablush/spec-kit"
+  license: "MIT"
+  homepage: "https://datablush.com"
+
+requires:
+  speckit_version: ">=1.0.0"
+  tools:
+    - name: "curl"
+      required: true
+    - name: "git"
+      required: true
+
+provides:
+  commands:
+    - name: "speckit.datablush.sync"
+      file: "commands/sync.md"
+      description: "Send this feature's files to Datablush and follow what needs doing next"
+    - name: "speckit.datablush.gate"
+      file: "commands/gate.md"
+      description: "Stop before implementing until the feature's plan is approved in Datablush"
+  scripts:
+    - name: "datablush"
+      file: "scripts/datablush.sh"
+      description: "Signs in and uploads spec files as they are on disk"
+      runtimes: ["bash"]
+
+hooks:
+  after_constitution:
+    command: "speckit.datablush.sync"
+    optional: false
+    description: "Send the constitution to Datablush"
+  after_specify:
+    command: "speckit.datablush.sync"
+    optional: false
+    description: "Send the new spec to Datablush"
+  after_clarify:
+    command: "speckit.datablush.sync"
+    optional: false
+    description: "Send the clarified spec to Datablush"
+  after_plan:
+    command: "speckit.datablush.sync"
+    optional: false
+    description: "Send the plan to Datablush"
+  after_checklist:
+    command: "speckit.datablush.sync"
+    optional: false
+    description: "Send the checklist to Datablush"
+  after_tasks:
+    command: "speckit.datablush.sync"
+    optional: false
+    description: "Send the tasks to Datablush"
+  before_implement:
+    command: "speckit.datablush.gate"
+    optional: false
+    description: "Check the plan is approved in Datablush"
+  after_implement:
+    command: "speckit.datablush.sync"
+    optional: false
+    description: "Send the ticked tasks to Datablush"
+
+tags:
+  - "datablush"
+  - "project-management"
+  - "sync"
+  - "approvals"
