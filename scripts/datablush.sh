@@ -10,6 +10,7 @@
 #     --constitution                           send .specify/memory/constitution.md instead
 #     --command NAME                           the Spec Kit command that just ran (plan, tasks…)
 #     --task KEY                               the task this feature is for (GEN-42), on its first sync
+#     --parent KEY                             the bigger piece of work it's part of (GEN-10)
 #     --brief                                  only print what needs doing next
 #   datablush.sh gate                          sync, then exit 3 unless the feature's plan is approved
 #
@@ -115,13 +116,14 @@ allowed() {
 }
 
 sync() {
-  local feature="" constitution="" command="" task="" brief="" gate="" root repository branch commit
+  local feature="" constitution="" command="" task="" parent="" brief="" gate="" root repository branch commit
   while [ $# -gt 0 ]; do
     case "$1" in
       --feature) feature="${2:-}"; shift ;;
       --constitution) constitution=1 ;;
       --command) command="${2:-}"; shift ;;
       --task) task="${2:-}"; shift ;;
+      --parent) parent="${2:-}"; shift ;;
       --brief) brief=1 ;;
       --gate) gate=1 ;;
       *) fail "unknown option $1" ;;
@@ -168,6 +170,7 @@ sync() {
   local args=(-F "repository=$repository" -F "path=$folder" -F "complete=true")
   [ -n "$command" ] && args+=(-F "command=$command")
   [ -n "$task" ] && args+=(-F "task=$task")
+  [ -n "$parent" ] && args+=(-F "parent=$parent")
   [ -n "$branch" ] && [ "$branch" != "HEAD" ] && args+=(-F "branch=$branch")
   [ -n "$commit" ] && args+=(-F "commit=$commit")
   for rel in "${files[@]}"; do args+=(-F "file:$rel=@\"$folder/$rel\";type=text/plain"); done
@@ -202,5 +205,5 @@ case "${1:-}" in
   logout) rm -f "$CREDENTIALS" && say "Disconnected this computer (the connection stays listed in Datablush until you remove it there)." ;;
   sync) shift; sync "$@" ;;
   gate) shift; sync --gate "$@" ;;
-  *) sed -n '2,21p' "$0" | sed -E 's/^# ?//'; exit 1 ;;
+  *) sed -n '2,22p' "$0" | sed -E 's/^# ?//'; exit 1 ;;
 esac

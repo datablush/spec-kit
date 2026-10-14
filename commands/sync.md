@@ -15,6 +15,9 @@ $ARGUMENTS
 2. Run the sync. It reads the files from disk and sends them itself: never paste file contents anywhere.
    - After /speckit.constitution: `bash .specify/extensions/datablush/scripts/datablush.sh sync --constitution --command constitution`
    - After any other command: `bash .specify/extensions/datablush/scripts/datablush.sh sync --command <command>`
+   - If the person said which task this feature is (GEN-42), add `--task GEN-42`; if it's part of a bigger piece
+     of work (GEN-10: an epic, or the same feature in another repository), add `--parent GEN-10`. Once is enough:
+     Datablush remembers.
 3. If it exits with code 2, this computer isn't connected yet. Run
    `bash .specify/extensions/datablush/scripts/datablush.sh login` (allow up to 10 minutes), show the person the link
    and the code it prints so they can allow it in Datablush, then run step 2 again.
